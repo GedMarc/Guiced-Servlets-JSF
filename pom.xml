@@ -16,7 +16,7 @@
     <name>Guiced Servlets - JSF</name>
     <description>Configures Guice Servlet for JSF
     </description>
-    <url>https://github.com/GedMarc/GuicedServlets-JSF</url>
+    <url>https://github.com/GedMarc/Guiced-Servlets-JSF</url>
 
     <dependencies>
         <dependency>
@@ -119,12 +119,12 @@
     </dependencies>
 
     <scm>
-        <url>https://github.com/GedMarc/GuicedServlets-JSF.git</url>
+        <url>https://github.com/GedMarc/Guiced-Servlets-JSF.git</url>
     </scm>
 
     <issueManagement>
         <system>Github</system>
-        <url>https://github.com/GedMarc/GuicedServlets-JSF/issues</url>
+        <url>https://github.com/GedMarc/Guiced-Servlets-JSF/issues</url>
     </issueManagement>
 
     <ciManagement>
@@ -143,7 +143,12 @@
         <profile>
             <id>jdk10</id>
             <dependencies>
-
+                <!-- Maven JDK 10 compile fix -->
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
+                    <scope>compile</scope>
+                </dependency>
             </dependencies>
         </profile>
 
