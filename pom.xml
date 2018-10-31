@@ -21,24 +21,6 @@
     <dependencies>
         <dependency>
             <groupId>com.jwebmp</groupId>
-            <artifactId>jwebmp-log-master</artifactId>
-            <version>${project.version}</version>
-            <classifier>${jwebmp.runtime.classifier}</classifier>
-            <!--<optional>true</optional>-->
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.jwebmp</groupId>
-            <artifactId>guiced-injection</artifactId>
-            <version>${project.version}</version>
-            <classifier>${jwebmp.runtime.classifier}</classifier>
-            <!--<optional>true</optional>-->
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.jwebmp</groupId>
             <artifactId>guiced-servlets</artifactId>
             <version>${project.version}</version>
             <classifier>${jwebmp.runtime.classifier}</classifier>
@@ -54,13 +36,6 @@
             <!--<optional>true</optional>-->
             <type>test-jar</type>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -110,7 +85,7 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
-            <version>3.0.0</version>
+            <version>${glassishel.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
