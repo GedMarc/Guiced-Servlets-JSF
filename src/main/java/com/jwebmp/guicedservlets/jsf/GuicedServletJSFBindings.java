@@ -1,6 +1,6 @@
 package com.jwebmp.guicedservlets.jsf;
 
-import com.jwebmp.guicedservlets.GuiceSiteInjectorModule;
+import com.jwebmp.guicedservlets.services.GuiceSiteInjectorModule;
 import com.jwebmp.guicedservlets.services.IGuiceSiteBinder;
 import com.jwebmp.logger.LogFactory;
 
