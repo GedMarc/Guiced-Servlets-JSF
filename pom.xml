@@ -70,9 +70,9 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-io</groupId>
+            <groupId>com.jwebmp</groupId>
             <artifactId>commons-io</artifactId>
-            <type>jar</type>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
