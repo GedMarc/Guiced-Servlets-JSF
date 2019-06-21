@@ -27,6 +27,12 @@
 
         <dependency>
             <groupId>com.jwebmp.guicedee.servlets</groupId>
+            <artifactId>guiced-undertow</artifactId>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jwebmp.guicedee.servlets</groupId>
             <artifactId>guiced-servlets</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>

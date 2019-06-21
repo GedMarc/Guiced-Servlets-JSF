@@ -12,10 +12,13 @@ module com.jwebmp.guicedservlets.jsf {
 	requires java.desktop;
 	requires com.jwebmp.guicedinjection;
 	requires java.validation;
+	requires com.jwebmp.undertow;
+	requires undertow.servlet;
 
 	provides com.jwebmp.guicedservlets.services.IGuiceSiteBinder with com.jwebmp.guicedservlets.jsf.GuicedServletJSFBindings;
 	provides com.jwebmp.guicedinjection.interfaces.IGuiceScanJarExclusions with com.jwebmp.guicedservlets.jsf.implementations.GuicedServletsJSFModuleExclusions;
 	provides com.jwebmp.guicedinjection.interfaces.IGuiceScanModuleExclusions with com.jwebmp.guicedservlets.jsf.implementations.GuicedServletsJSFModuleExclusions;
+	provides com.jwebmp.undertow.services.UndertowDeploymentConfigurator with com.jwebmp.guicedservlets.jsf.implementations.GuicedJSFDeploymentInfoConfiguration;
 
 	opens com.jwebmp.guicedservlets.jsf to com.google.guice;
 	opens com.jwebmp.guicedservlets.jsf.implementations to com.google.guice;
