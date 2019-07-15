@@ -14,11 +14,14 @@ module com.jwebmp.guicedservlets.jsf {
 	requires java.validation;
 	requires com.jwebmp.undertow;
 	requires undertow.servlet;
+	requires io.github.classgraph;
+	requires javax.inject;
 
 	provides com.jwebmp.guicedservlets.services.IGuiceSiteBinder with com.jwebmp.guicedservlets.jsf.GuicedServletJSFBindings;
 	provides com.jwebmp.guicedinjection.interfaces.IGuiceScanJarExclusions with com.jwebmp.guicedservlets.jsf.implementations.GuicedServletsJSFModuleExclusions;
 	provides com.jwebmp.guicedinjection.interfaces.IGuiceScanModuleExclusions with com.jwebmp.guicedservlets.jsf.implementations.GuicedServletsJSFModuleExclusions;
 	provides com.jwebmp.undertow.services.UndertowDeploymentConfigurator with com.jwebmp.guicedservlets.jsf.implementations.GuicedJSFDeploymentInfoConfiguration;
+	provides com.jwebmp.guicedinjection.interfaces.IGuiceModule with com.jwebmp.guicedservlets.jsf.implementations.JsfNamedBinder;
 
 	opens com.jwebmp.guicedservlets.jsf to com.google.guice;
 	opens com.jwebmp.guicedservlets.jsf.implementations to com.google.guice;

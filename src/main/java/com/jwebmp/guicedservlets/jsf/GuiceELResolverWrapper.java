@@ -1,14 +1,17 @@
 package com.jwebmp.guicedservlets.jsf;
 
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import com.jwebmp.guicedinjection.GuiceContext;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import java.beans.FeatureDescriptor;
+import java.lang.reflect.Field;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A {@link FacesWrapper} implementation that wraps an {@link ELResolver} and
@@ -61,10 +64,7 @@ public class GuiceELResolverWrapper
 
 			if (null != fctx)
 			{
-
-				Map map = fctx.getExternalContext()
-				              .getApplicationMap();
-				Injector injector = (Injector) map.get(Injector.class.getName());
+				Injector injector = GuiceContext.inject();
 				if (injector == null)
 				{
 					throw new NullPointerException("Could not locate "
@@ -72,6 +72,45 @@ public class GuiceELResolverWrapper
 					                               + " key '" + Injector.class.getName() + "'");
 				}
 				injector.injectMembers(obj);
+			}
+		}
+		else
+		{
+			if (base != null)
+			{
+				try
+				{
+					Field f = base.getClass()
+					              .getDeclaredField(property.toString());
+					f.setAccessible(true);
+					obj = f.get(base);
+					if(obj != null)
+					{
+						GuiceContext.inject().injectMembers(obj);
+					}
+				}
+				catch (IllegalAccessException | NoSuchFieldException e)
+				{
+					throw new RuntimeException("Could not access field " + property.toString()
+					                           + " on "
+					                           + " obj '" + base.getClass()
+					                                            .getCanonicalName()
+					                           + "'", e);
+				}
+			}
+			else
+			{
+				try
+				{
+					obj = GuiceContext.get(Key.get(Object.class, Names.named(property.toString())));
+				}
+				catch (Throwable e)
+				{
+					throw new RuntimeException("Could not locate jsf property " + property.toString()
+					                           + " using"
+					                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
+					                           + "'", e);
+				}
 			}
 		}
 
