@@ -32,14 +32,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jwebmp.guicedee.servlets</groupId>
-            <artifactId>guiced-servlets</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
@@ -72,23 +64,28 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
+            <groupId>com.jwebmp.thirdparty.gee4j</groupId>
+            <artifactId>jakarta.el</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>com.jwebmp.thirdparty.gee4j</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
+            <groupId>com.jwebmp.thirdparty.gee4j</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet.jsp.jstl</groupId>
-            <artifactId>jstl-api</artifactId>
+            <groupId>com.jwebmp.thirdparty.gee4j</groupId>
+            <artifactId>javax.servlet.jsp.jstl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jwebmp.thirdparty</groupId>
+            <artifactId>javax.faces</artifactId>
         </dependency>
 
     </dependencies>
@@ -107,62 +104,4 @@
         <url>http://jwebmp.com/teamcity</url>
     </ciManagement>
 
-    <profiles>
-        <profile>
-            <id>jdk8</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.moditect</groupId>
-                        <artifactId>moditect-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>add-module-infos</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>add-module-info</goal>
-                                </goals>
-                                <configuration>
-                                    <overwriteExistingFiles>true</overwriteExistingFiles>
-                                    <module>
-                                        <moduleInfoFile>
-                                            src/jre11/java/module-info.java
-                                        </moduleInfoFile>
-                                    </module>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish</groupId>
-                    <artifactId>javax.faces</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>jdk11</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.jwebmp.thirdparty.faces</groupId>
-                    <artifactId>javax.faces</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>jdk12</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.jwebmp.thirdparty.faces</groupId>
-                    <artifactId>javax.faces</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-    </profiles>
 </project>
