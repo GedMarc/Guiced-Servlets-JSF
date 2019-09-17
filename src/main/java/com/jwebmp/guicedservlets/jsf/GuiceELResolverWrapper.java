@@ -9,9 +9,13 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
 import java.beans.FeatureDescriptor;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A {@link FacesWrapper} implementation that wraps an {@link ELResolver} and
@@ -55,13 +59,11 @@ public class GuiceELResolverWrapper
 	@Override
 	public Object getValue(ELContext context, Object base, Object property)
 	{
-
 		Object obj = getWrapped().getValue(context, base, property);
 
 		if (null != obj)
 		{
 			FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
-
 			if (null != fctx)
 			{
 				Injector injector = GuiceContext.inject();
@@ -78,6 +80,10 @@ public class GuiceELResolverWrapper
 		{
 			if (base != null)
 			{
+				if(base instanceof Collections || base instanceof Map)
+				{
+					return null;
+				}
 				try
 				{
 					Field f = base.getClass()
@@ -103,6 +109,12 @@ public class GuiceELResolverWrapper
 				try
 				{
 					obj = GuiceContext.get(Key.get(Object.class, Names.named(property.toString())));
+					if(obj.getClass().isAnnotationPresent(FacesConverter.class))
+					{
+						javax.faces.convert.Converter conv = (Converter) obj;
+						FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
+						return conv.getAsObject(fctx, null, null);
+					}
 				}
 				catch (Throwable e)
 				{
