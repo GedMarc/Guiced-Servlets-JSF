@@ -10,8 +10,10 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.jwebmp.guicedinjection.GuiceContext;
 import com.jwebmp.guicedinjection.interfaces.IGuiceModule;
+import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.MethodInfo;
+import io.github.classgraph.ScanResult;
 
 import javax.faces.bean.ManagedBean;
 import javax.inject.Named;
@@ -29,10 +31,13 @@ public class JsfNamedBinder
 
 	@Override
 	protected void configure() {
+		ScanResult sr = new ClassGraph().enableAllInfo()
+		                                .scan(Runtime.getRuntime()
+		                                             .availableProcessors());
+		GuiceContext.instance().setScanResult(sr);
+
 		List<String> completed = new ArrayList<>();
-		for (ClassInfo classInfo : GuiceContext.instance()
-		                                       .getScanResult()
-		                                       .getClassesWithAnnotation(Named.class.getCanonicalName())) {
+		for (ClassInfo classInfo : sr.getClassesWithAnnotation(Named.class.getCanonicalName())) {
 			if (classInfo.isInterfaceOrAnnotation() || classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
 				continue;
 			}
@@ -46,9 +51,7 @@ public class JsfNamedBinder
 			                  .to(clazz);
 		}
 
-		for (ClassInfo classInfo : GuiceContext.instance()
-		                                       .getScanResult()
-		                                       .getClassesWithAnnotation(ManagedBean.class.getCanonicalName())) {
+		for (ClassInfo classInfo : sr.getClassesWithAnnotation(ManagedBean.class.getCanonicalName())) {
 			if (classInfo.isInterfaceOrAnnotation()
 			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
 				continue;
@@ -77,9 +80,7 @@ public class JsfNamedBinder
 			}
 		}
 
-		for (ClassInfo classInfo : GuiceContext.instance()
-		                                       .getScanResult()
-		                                       .getClassesWithAnnotation("javax.faces.convert.FacesConverter")) {
+		for (ClassInfo classInfo : sr.getClassesWithAnnotation("javax.faces.convert.FacesConverter")) {
 			if (classInfo.isInterfaceOrAnnotation()
 			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
 				continue;
@@ -107,9 +108,7 @@ public class JsfNamedBinder
 			public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
 				Class<?> clazz = typeLiteral.getRawType();
 				try {
-					ClassInfo info = GuiceContext.instance()
-					                             .getScanResult()
-					                             .getClassInfo(clazz.getCanonicalName());
+					ClassInfo info = sr.getClassInfo(clazz.getCanonicalName());
 					if (info != null && info.hasMethodAnnotation("javax.annotation.PostConstruct")) {
 						for (MethodInfo methodInfo : GuiceContext.instance()
 						                                         .getScanResult()

@@ -26,6 +26,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.jwebmp.thirdparty.gee4j</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.jwebmp.guicedee.servlets</groupId>
             <artifactId>guiced-undertow</artifactId>
             <type>jar</type>
@@ -65,11 +71,6 @@
 
         <dependency>
             <groupId>com.jwebmp.thirdparty.gee4j</groupId>
-            <artifactId>jakarta.el</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.jwebmp.thirdparty.gee4j</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
         </dependency>
 
@@ -86,6 +87,7 @@
         <dependency>
             <groupId>com.jwebmp.thirdparty</groupId>
             <artifactId>javax.faces</artifactId>
+            <type>jar</type>
         </dependency>
 
     </dependencies>

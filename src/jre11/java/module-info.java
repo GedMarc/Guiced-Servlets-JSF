@@ -1,10 +1,12 @@
 module com.jwebmp.guicedservlets.jsf {
 	exports com.jwebmp.guicedservlets.jsf;
 
-	requires com.jwebmp.guicedservlets;
+	requires transitive com.jwebmp.guicedservlets;
 	requires com.google.guice;
-	requires javax.faces;
-	requires javax.servlet.api;
+
+	requires transitive jakarta.faces;
+
+	requires transitive javax.servlet.api;
 	requires com.google.guice.extensions.servlet;
 	requires com.jwebmp.logmaster;
 	requires java.logging;
