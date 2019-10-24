@@ -1,4 +1,4 @@
-package com.jwebmp.guicedservlets.jsf;
+package com.guicedee.guicedservlets.jsf;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -24,43 +24,36 @@ final class ViewScopeImpl
 	public <T> Provider<T> scope(Key<T> key, Provider<T> unscoped)
 	{
 		String name = key.toString();
-		return new Provider<T>()
-		{
+		return new Provider<>() {
 
 			@Override
-			public T get()
-			{
+			public T get() {
 				FacesContext facesContext = FacesContext.getCurrentInstance();
 				UIViewRoot viewRoot = facesContext.getViewRoot();
 
 				// fallback if no view is active. Consider to throw an exception
 				// (you might also want to check whether there actually is a FacesContext
 				// available to prevent injecting your beans outside a valid view scope)
-				if (viewRoot == null)
-				{
+				if (viewRoot == null) {
 					return unscoped.get();
 				}
 
 				Map<String, Object> viewMap = viewRoot.getViewMap(true);
-				synchronized (viewMap)
-				{
+				synchronized (viewMap) {
 					Object obj = viewMap.get(name);
-					if (obj == NullObject.INSTANCE)
-					{
+					if (obj == NullObject.INSTANCE) {
 						return null;
 					}
 
 					@SuppressWarnings("unchecked")
 					T t = (T) obj;
-					if (t == null)
-					{
+					if (t == null) {
 						t = unscoped.get();
-						if (!Scopes.isCircularProxy(t))
-						{
+						if (!Scopes.isCircularProxy(t)) {
 							viewRoot.getViewMap()
-							        .put(name, t == null
-							                   ? NullObject.INSTANCE
-							                   : t);
+									.put(name, t == null
+											? NullObject.INSTANCE
+											: t);
 						}
 					}
 					return t;
@@ -68,8 +61,7 @@ final class ViewScopeImpl
 			}
 
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return String.format("%s[%s]", unscoped, ViewScopeImpl.this);
 			}
 

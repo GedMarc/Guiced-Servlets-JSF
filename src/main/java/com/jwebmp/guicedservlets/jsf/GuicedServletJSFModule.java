@@ -1,20 +1,23 @@
-package com.jwebmp.guicedservlets.jsf;
+package com.guicedee.guicedservlets.jsf;
 
-import com.jwebmp.guicedinjection.GuiceContext;
-import com.jwebmp.guicedservlets.services.GuiceSiteInjectorModule;
-import com.jwebmp.guicedservlets.services.IGuiceSiteBinder;
-import com.jwebmp.logger.LogFactory;
+import com.guicedee.guicedservlets.services.GuiceSiteInjectorModule;
+import com.guicedee.guicedservlets.services.IGuiceSiteBinder;
+import com.guicedee.logger.LogFactory;
 
 import javax.faces.webapp.FacesServlet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
-public class GuicedServletJSFBindings
+public class GuicedServletJSFModule
 		implements IGuiceSiteBinder<GuiceSiteInjectorModule>
 {
 	/**
 	 * The logger
 	 */
-	private static final Logger log = LogFactory.getLog("GuicedServletJSFBindings");
+	private static final Logger log = LogFactory.getLog("GuicedServletJSFModule");
+
+	private static Set<String> facesServPattern = new HashSet<>();
 
 	@Override
 	public void onBind(GuiceSiteInjectorModule module)
@@ -26,6 +29,6 @@ public class GuicedServletJSFBindings
 		      .with(FacesHttpServlet.class);
 		log.config("Serving /faces with Faces Servlet");
 		module.bindScope(ViewScoped.class, new ViewScopeImpl());
-		log.config("Added View Scope");
+		log.config("Added View Scope??");
 	}
 }

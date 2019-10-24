@@ -1,4 +1,4 @@
-package com.jwebmp.guicedservlets.jsf;
+package com.guicedee.guicedservlets.jsf;
 
 import javax.el.ELResolver;
 import javax.faces.application.Application;
@@ -22,6 +22,7 @@ public class FacesApplicationWrapper
 	 * @param wrapped
 	 * 		The {@link } to be wrapped.
 	 */
+	@SuppressWarnings("deprecation")
 	public FacesApplicationWrapper(Application wrapped)
 	{
 		this.wrapped = wrapped;

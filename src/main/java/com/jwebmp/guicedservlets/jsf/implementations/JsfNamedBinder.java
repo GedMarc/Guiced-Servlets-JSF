@@ -1,23 +1,16 @@
-package com.jwebmp.guicedservlets.jsf.implementations;
-
+package com.guicedee.guicedservlets.jsf.implementations;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
-import com.jwebmp.guicedinjection.GuiceContext;
-import com.jwebmp.guicedinjection.interfaces.IGuiceModule;
-import io.github.classgraph.ClassGraph;
+import com.google.inject.servlet.RequestScoped;
+import com.google.inject.servlet.SessionScoped;
 import io.github.classgraph.ClassInfo;
-import io.github.classgraph.MethodInfo;
-import io.github.classgraph.ScanResult;
+import com.guicedee.guicedinjection.GuiceContext;
+import com.guicedee.guicedinjection.interfaces.IGuiceModule;
 
 import javax.faces.bean.ManagedBean;
 import javax.inject.Named;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,18 +19,15 @@ import java.util.Map;
 public class JsfNamedBinder
 		extends AbstractModule
 		implements IGuiceModule<JsfNamedBinder> {
-
 	public static final Map<String, Class<?>> facesConvertors = new HashMap<>();
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void configure() {
-		ScanResult sr = new ClassGraph().enableAllInfo()
-		                                .scan(Runtime.getRuntime()
-		                                             .availableProcessors());
-		GuiceContext.instance().setScanResult(sr);
-
 		List<String> completed = new ArrayList<>();
-		for (ClassInfo classInfo : sr.getClassesWithAnnotation(Named.class.getCanonicalName())) {
+		for (ClassInfo classInfo : GuiceContext.instance()
+											   .getScanResult()
+											   .getClassesWithAnnotation(Named.class.getCanonicalName())) {
 			if (classInfo.isInterfaceOrAnnotation() || classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
 				continue;
 			}
@@ -45,15 +35,16 @@ public class JsfNamedBinder
 			completed.add(clazz.getCanonicalName());
 			Named nn = clazz.getAnnotation(Named.class);
 			String name = nn.value()
-			                .equals("") ? classInfo.getName() : nn.value();
-			bind(clazz);
-			bind(Object.class).annotatedWith(Names.named(name))
-			                  .to(clazz);
+							.equals("") ? classInfo.getSimpleName() : nn.value();
+
+			bindToScope(clazz, name);
 		}
 
-		for (ClassInfo classInfo : sr.getClassesWithAnnotation(ManagedBean.class.getCanonicalName())) {
+		for (ClassInfo classInfo : GuiceContext.instance()
+											   .getScanResult()
+											   .getClassesWithAnnotation(ManagedBean.class.getCanonicalName())) {
 			if (classInfo.isInterfaceOrAnnotation()
-			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
+					|| classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
 				continue;
 			}
 			Class<?> clazz = classInfo.loadClass();
@@ -62,27 +53,29 @@ public class JsfNamedBinder
 			}
 			completed.add(clazz.getCanonicalName());
 			ManagedBean nn = clazz.getAnnotation(ManagedBean.class);
-			String name = nn.name()
-			                .equals("") ? classInfo.getName() : nn.name();
-			StringBuilder sb = new StringBuilder(name);
-			sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
-			name = sb.toString();
+			String name = nn.name();
+			if (name.equals("")) {
+				name = classInfo.getSimpleName();
+				StringBuilder sb = new StringBuilder(name);
+				sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+				name = sb.toString();
+			}
 
 			if (nn.eager()) {
 				bind(clazz).asEagerSingleton();
 				bind(Object.class).annotatedWith(Names.named(name))
-				                  .to(clazz);
+								  .to(clazz);
 			}
 			else {
-				bind(Object.class).annotatedWith(Names.named(name))
-				                  .to(clazz);
-				bind(clazz);
+				bindToScope(clazz, name);
 			}
 		}
 
-		for (ClassInfo classInfo : sr.getClassesWithAnnotation("javax.faces.convert.FacesConverter")) {
+		for (ClassInfo classInfo : GuiceContext.instance()
+											   .getScanResult()
+											   .getClassesWithAnnotation("javax.faces.convert.FacesConverter")) {
 			if (classInfo.isInterfaceOrAnnotation()
-			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
+					|| classInfo.hasAnnotation("javax.enterprise.context.Dependent")) {
 				continue;
 			}
 			Class<?> clazz = classInfo.loadClass();
@@ -92,50 +85,40 @@ public class JsfNamedBinder
 			completed.add(clazz.getCanonicalName());
 			javax.faces.convert.FacesConverter nn = clazz.getAnnotation(javax.faces.convert.FacesConverter.class);
 			String name = nn.value()
-			                .equals("") ? classInfo.getName() : nn.value();
+							.equals("") ? classInfo.getName() : nn.value();
 			StringBuilder sb = new StringBuilder(name);
 			sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
 			name = sb.toString();
 
-			bind(clazz);
-			bind(Object.class).annotatedWith(Names.named(name))
-			                  .to(clazz);
+			bindToScope(clazz, name);
+
 			facesConvertors.put(name, clazz);
 		}
-
-		bindListener(Matchers.any(), new  TypeListener() {
-			@Override
-			public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
-				Class<?> clazz = typeLiteral.getRawType();
-				try {
-					ClassInfo info = sr.getClassInfo(clazz.getCanonicalName());
-					if (info != null && info.hasMethodAnnotation("javax.annotation.PostConstruct")) {
-						for (MethodInfo methodInfo : GuiceContext.instance()
-						                                         .getScanResult()
-						                                         .getClassInfo(clazz.getCanonicalName())
-						                                         .getMethodInfo()) {
-							if (methodInfo.hasAnnotation("javax.annotation.PostConstruct")) {
-								typeEncounter.register(new InjectionListener<I>() {
-									@Override
-									public void afterInjection(I i) {
-										try {
-											methodInfo.loadClassAndGetMethod()
-											          .invoke(i);
-										} catch (IllegalAccessException | InvocationTargetException e) {
-											e.printStackTrace();
-										}
-									}
-								});
-							}
-						}
-					}
-				}catch(NullPointerException npe)
-				{
-					npe.printStackTrace();
-				}
-			}
-		});
-
 		super.configure();
 	}
+
+	private void bindToScope(Class<?> clazz, String name) {
+		if (clazz.isAnnotationPresent(Singleton.class) || clazz.isAnnotationPresent(javax.inject.Singleton.class)) {
+			bind(clazz).in(Singleton.class);
+			bind(Object.class).annotatedWith(Names.named(name))
+							  .to(clazz).in(Singleton.class);
+		}
+		else if (clazz.isAnnotationPresent(SessionScoped.class)) {
+			bind(clazz).in(SessionScoped.class);
+			bind(Object.class).annotatedWith(Names.named(name))
+							  .to(clazz).in(SessionScoped.class);
+		}
+		else if (clazz.isAnnotationPresent(RequestScoped.class)) {
+			bind(clazz).in(RequestScoped.class);
+			bind(Object.class).annotatedWith(Names.named(name))
+							  .to(clazz).in(RequestScoped.class);
+		}
+		else {
+			bind(clazz);
+			bind(Object.class).annotatedWith(Names.named(name))
+							  .to(clazz);
+		}
+	}
+
+
 }

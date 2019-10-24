@@ -1,7 +1,7 @@
-package com.jwebmp.guicedservlets.jsf.implementations;
+package com.guicedee.guicedservlets.jsf.implementations;
 
-import com.jwebmp.guicedinjection.interfaces.IGuiceScanJarExclusions;
-import com.jwebmp.guicedinjection.interfaces.IGuiceScanModuleExclusions;
+import com.guicedee.guicedinjection.interfaces.IGuiceScanJarExclusions;
+import com.guicedee.guicedinjection.interfaces.IGuiceScanModuleExclusions;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
@@ -18,6 +18,7 @@ public class GuicedServletsJSFModuleExclusions
 		strings.add("guiced-servlets-jsf-*");
 		strings.add("javax.faces-*");
 		strings.add("javax.el-*");
+		strings.add("javax.servlet-*");
 		return strings;
 	}
 
@@ -25,19 +26,19 @@ public class GuicedServletsJSFModuleExclusions
 	public @NotNull Set<String> excludeModules()
 	{
 		Set<String> strings = new HashSet<>();
-		strings.add("com.jwebmp.guicedservlets.jsf");
+		strings.add("com.guicedee.jpms.guicedservlets.jsf");
 
 
-		strings.add("com.jwebmp.guicedservlets");
+		strings.add("com.guicedee.jpms.guicedservlets");
 		strings.add("com.google.guice");
 		strings.add("javax.faces");
 		strings.add("javax.servlet.api");
 		strings.add("com.google.guice.extensions.servlet");
-		strings.add("com.jwebmp.logmaster");
+		strings.add("com.guicedee.jpms.logmaster");
 		strings.add("java.logging");
 		strings.add("javax.el");
 		strings.add("java.desktop");
-		strings.add("com.jwebmp.guicedinjection");
+		strings.add("com.guicedee.jpms.guicedinjection");
 		strings.add("java.validation");
 
 		return strings;

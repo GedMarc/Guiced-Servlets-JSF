@@ -1,4 +1,4 @@
-package com.jwebmp.guicedservlets.jsf;
+package com.guicedee.guicedservlets.jsf;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

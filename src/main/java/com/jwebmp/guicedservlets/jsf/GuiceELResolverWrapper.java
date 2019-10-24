@@ -1,12 +1,14 @@
-package com.jwebmp.guicedservlets.jsf;
+package com.guicedee.guicedservlets.jsf;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import com.jwebmp.guicedinjection.GuiceContext;
+import com.guicedee.guicedinjection.GuiceContext;
+import com.guicedee.logger.LogFactory;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -16,6 +18,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * A {@link FacesWrapper} implementation that wraps an {@link ELResolver} and
@@ -63,7 +66,8 @@ public class GuiceELResolverWrapper
 
 		if (null != obj)
 		{
-			FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
+			/*FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
+
 			if (null != fctx)
 			{
 				Injector injector = GuiceContext.inject();
@@ -73,8 +77,8 @@ public class GuiceELResolverWrapper
 					                               + "Guice Injector in application scope using"
 					                               + " key '" + Injector.class.getName() + "'");
 				}
-				injector.injectMembers(obj);
-			}
+				//injector.injectMembers(obj);
+			}*/
 		}
 		else
 		{
@@ -118,10 +122,11 @@ public class GuiceELResolverWrapper
 				}
 				catch (Throwable e)
 				{
-					throw new RuntimeException("Could not locate jsf property " + property.toString()
+					LogFactory.getLog(GuiceELResolverWrapper.class).log(Level.FINE,"Could not locate jsf property " + property.toString()
 					                           + " using"
 					                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
 					                           + "'", e);
+					return null;
 				}
 			}
 		}

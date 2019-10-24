@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.jwebmp.jpms.guicedee.servlets</groupId>
+        <groupId>com.guicedee.servlets</groupId>
         <artifactId>servlets-parent</artifactId>
         <version>0.0.0_0-SNAPSHOT</version>
     </parent>
@@ -14,81 +14,90 @@
     <packaging>jar</packaging>
 
     <name>Guiced Servlets - JSF</name>
-    <description>Configures Guice Servlet for JSF
-    </description>
+
+    <description>Configures Guice Servlet for JSF</description>
+
     <url>https://github.com/GedMarc/Guiced-Servlets-JSF</url>
 
     <dependencies>
-        <dependency>
-            <groupId>com.jwebmp.jpms.guicedee.servlets</groupId>
+  <!--      <dependency>
+            <groupId>com.guicedee.servlets</groupId>
             <artifactId>guiced-servlets</artifactId>
             <type>jar</type>
-            </dependency>
+        </dependency>-->
 
         <dependency>
-            <groupId>com.jwebmp.jpms.thirdparty</groupId>
-            <artifactId>jakarta.el</artifactId>
-            <version>${project.version}</version><type>jar</type>
-            </dependency>
-
-        <dependency>
-            <groupId>com.jwebmp.jpms.guicedee.servlets</groupId>
+            <groupId>com.guicedee.servlets</groupId>
             <artifactId>guiced-undertow</artifactId>
             <type>jar</type>
-            </dependency>
+        </dependency>
+
+        <dependency>
+            <groupId>com.guicedee.servlets</groupId>
+            <artifactId>guiced-servlets</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId><type>jar</type>
-            </dependency>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId><type>jar</type>
-            </dependency>
+            <artifactId>hamcrest-all</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId><type>jar</type>
-            </dependency>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId><type>jar</type>
-            </dependency>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope><type>jar</type>
-            </dependency>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
-            <groupId>com.jwebmp.jpms.thirdparty</groupId>
+            <groupId>com.guicedee.services</groupId>
             <artifactId>commons-io</artifactId>
             <type>jar</type>
-            </dependency>
+        </dependency>
+
+      <!--  <dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>jakarta.el</artifactId>
+        </dependency>-->
+
+  <!--      <dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </dependency>-->
+<!--
 
         <dependency>
-            <groupId>com.jwebmp.jpms.thirdparty</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId><type>jar</type>
-            </dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+        </dependency>
 
         <dependency>
-            <groupId>com.jwebmp.jpms.thirdparty</groupId>
-            <artifactId>jakarta.servlet.jsp-api</artifactId><type>jar</type>
-            </dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>javax.servlet.jsp.jstl</artifactId>
+        </dependency>
+-->
 
         <dependency>
-            <groupId>com.jwebmp.jpms.thirdparty</groupId>
-            <artifactId>javax.servlet.jsp.jstl</artifactId><type>jar</type>
-            </dependency>
-
-        <dependency>
-            <groupId>com.jwebmp.jpms.thirdparty</groupId>
+            <groupId>com.guicedee.services</groupId>
             <artifactId>javax.faces</artifactId>
-            <type>jar</type>
-            </dependency>
+        </dependency>
 
     </dependencies>
 
@@ -105,5 +114,6 @@
         <system>TeamCity</system>
         <url>http://jwebmp.com/teamcity</url>
     </ciManagement>
+
 
 </project>

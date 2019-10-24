@@ -1,7 +1,6 @@
-package com.jwebmp.guicedservlets.jsf.implementations;
+package com.guicedee.guicedservlets.jsf.implementations;
 
-import com.jwebmp.undertow.services.UndertowDeploymentConfigurator;
-import com.sun.faces.RIConstants;
+import com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigurator;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ListenerInfo;
 
@@ -11,8 +10,11 @@ public class GuicedJSFDeploymentInfoConfiguration implements UndertowDeploymentC
 	@Override
 	public DeploymentInfo configure(DeploymentInfo deploymentInfo)
 	{
-		deploymentInfo.addServletContextAttribute(RIConstants.FACES_INITIALIZER_MAPPINGS_ADDED, Boolean.TRUE)
+		deploymentInfo.addServletContextAttribute("com.sun.faces.facesInitializerMappingsAdded", Boolean.TRUE)
 				 .addListener(new ListenerInfo(com.sun.faces.config.ConfigureListener.class));
+
+		//deploymentInfo.addInitParameter("javax.faces.CONFIG_FILES",facesConfigMergedFilename);
+
 		return deploymentInfo;
 	}
 }
