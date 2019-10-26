@@ -19,6 +19,8 @@ public class GuicedServletsJSFModuleExclusions
 		strings.add("javax.faces-*");
 		strings.add("javax.el-*");
 		strings.add("javax.servlet-*");
+
+
 		return strings;
 	}
 
@@ -26,22 +28,20 @@ public class GuicedServletsJSFModuleExclusions
 	public @NotNull Set<String> excludeModules()
 	{
 		Set<String> strings = new HashSet<>();
-		strings.add("com.guicedee.jpms.guicedservlets.jsf");
+		strings.add("com.guicedee.guicedservlets.jsf");
 
 
-		strings.add("com.guicedee.jpms.guicedservlets");
+		strings.add("com.guicedee.guicedservlets");
 		strings.add("com.google.guice");
 		strings.add("javax.faces");
 		strings.add("javax.servlet.api");
 		strings.add("com.google.guice.extensions.servlet");
-		strings.add("com.guicedee.jpms.logmaster");
+		strings.add("com.guicedee.logmaster");
 		strings.add("java.logging");
 		strings.add("javax.el");
 		strings.add("java.desktop");
-		strings.add("com.guicedee.jpms.guicedinjection");
+		strings.add("com.guicedee.guicedinjection");
 		strings.add("java.validation");
-
-
 
 		return strings;
 	}
