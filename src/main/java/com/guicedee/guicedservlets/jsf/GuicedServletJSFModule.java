@@ -28,7 +28,5 @@ public class GuicedServletJSFModule
 		module.serve$("/faces/", "/faces/*", "*.jsf", "*.faces", "*.xhtml")
 		      .with(FacesHttpServlet.class);
 		log.config("Serving /faces with Faces Servlet");
-		module.bindScope(ViewScoped.class, new ViewScopeImpl());
-		log.config("Added View Scope??");
 	}
 }

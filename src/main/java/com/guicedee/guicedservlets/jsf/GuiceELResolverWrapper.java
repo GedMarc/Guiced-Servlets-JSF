@@ -8,7 +8,6 @@ import com.guicedee.logger.LogFactory;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
-import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;

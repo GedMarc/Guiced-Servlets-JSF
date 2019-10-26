@@ -1,12 +1,6 @@
-import com.guicedee.guicedinjection.interfaces.*;
-import com.guicedee.guicedservlets.jsf.GuicedServletJSFModule;
-import com.guicedee.guicedservlets.jsf.implementations.*;
-import com.guicedee.guicedservlets.services.IGuiceSiteBinder;
-import com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigurator;
-
 module com.guicedee.guicedservlets.jsf {
 	exports com.guicedee.guicedservlets.jsf;
-	exports com.guicedee.schemas.facesconfig;
+//	exports com.guicedee.schemas.facesconfig;
 
 	requires com.guicedee.guicedservlets;
 	requires com.google.guice;
@@ -27,18 +21,15 @@ module com.guicedee.guicedservlets.jsf {
 
 	requires java.xml.bind;
 
-	provides IGuiceSiteBinder with GuicedServletJSFModule;
-	provides IGuiceScanJarExclusions with GuicedServletsJSFModuleExclusions;
-	provides IGuiceScanModuleExclusions with GuicedServletsJSFModuleExclusions;
-	provides UndertowDeploymentConfigurator with GuicedJSFDeploymentInfoConfiguration;
-	provides IGuiceModule with JsfNamedBinder;
+	provides com.guicedee.guicedservlets.services.IGuiceSiteBinder with com.guicedee.guicedservlets.jsf.GuicedServletJSFModule;
+	provides com.guicedee.guicedinjection.interfaces.IGuiceScanJarExclusions with com.guicedee.guicedservlets.jsf.implementations.GuicedServletsJSFModuleExclusions;
+	provides com.guicedee.guicedinjection.interfaces.IGuiceScanModuleExclusions with com.guicedee.guicedservlets.jsf.implementations.GuicedServletsJSFModuleExclusions;
+	provides com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigurator with com.guicedee.guicedservlets.jsf.implementations.GuicedJSFDeploymentInfoConfiguration;
+	provides com.guicedee.guicedinjection.interfaces.IGuiceModule with com.guicedee.guicedservlets.jsf.implementations.JsfNamedBinder;
 
-
-	provides IFileContentsScanner with FacesConfigFileHandler;
-	provides IPathContentsScanner with GuiceInjectionWebInfScanner;
-	provides IGuicePostStartup with FacesConfigMergerPostStartup;
+	provides com.guicedee.guicedinjection.interfaces.IPathContentsScanner with com.guicedee.guicedservlets.jsf.implementations.GuiceInjectionWebInfScanner;
 
 	opens com.guicedee.guicedservlets.jsf to com.google.guice;
-	opens com.guicedee.schemas.facesconfig to java.xml.bind;
+	//opens com.guicedee.schemas.facesconfig to java.xml.bind;
 	opens com.guicedee.guicedservlets.jsf.implementations to com.google.guice;
 }

@@ -41,6 +41,8 @@ public class GuicedServletsJSFModuleExclusions
 		strings.add("com.guicedee.jpms.guicedinjection");
 		strings.add("java.validation");
 
+
+
 		return strings;
 	}
 }
