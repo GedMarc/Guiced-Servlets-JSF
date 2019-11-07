@@ -113,7 +113,7 @@ public class GuiceELResolverWrapper
 				return null;
 			}
 		}
-
+		context.setPropertyResolved(true);
 		return obj;
 	}
 
