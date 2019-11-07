@@ -6,14 +6,15 @@ import com.google.inject.name.Names;
 import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.logger.LogFactory;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import javax.el.*;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import java.beans.FeatureDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -61,7 +62,9 @@ public class GuiceELResolverWrapper
 	@Override
 	public Object getValue(ELContext context, Object base, Object property)
 	{
-		Object obj;
+		Object obj = getWrapped().getValue(context,base,property);
+		if(obj != null)
+			return obj;
 
 		if (base != null)
 		{
@@ -71,6 +74,7 @@ public class GuiceELResolverWrapper
 			}
 			try
 			{
+
 				Field f = base.getClass()
 				              .getDeclaredField(property.toString());
 				f.setAccessible(true);
@@ -83,11 +87,13 @@ public class GuiceELResolverWrapper
 			}
 			catch (IllegalAccessException | NoSuchFieldException e)
 			{
-				throw new RuntimeException("Could not access field " + property.toString()
-				                           + " on "
-				                           + " obj '" + base.getClass()
-				                                            .getCanonicalName()
-				                           + "'", e);
+				LogFactory.getLog(GuiceELResolverWrapper.class)
+				          .log(Level.FINE,"Could not access field " + property.toString()
+				                          + " on "
+				                          + " obj '" + base.getClass()
+				                                           .getCanonicalName()
+				                          + "'", e);
+				return getWrapped().getValue(context, base, property);
 			}
 		}
 		else
@@ -105,16 +111,44 @@ public class GuiceELResolverWrapper
 			}
 			catch (Throwable e)
 			{
-				LogFactory.getLog(GuiceELResolverWrapper.class)
-				          .log(Level.FINE, "Could not locate jsf property " + property.toString()
-				                           + " using"
-				                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
-				                           + "'", e);
+				try
+				{
+					return getWrapped().getValue(context, base, property);
+				}catch (Throwable T)
+				{
+					LogFactory.getLog(GuiceELResolverWrapper.class)
+					          .log(Level.FINE, "Could not locate jsf property " + property.toString()
+					                           + " using"
+					                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
+					                           + "'", e);
+				}
 				return null;
 			}
 		}
 		context.setPropertyResolved(true);
 		return obj;
+	}
+
+	/** @noinspection JavaReflectionInvocation*/
+	@Override
+	public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object... params)
+	{
+		try
+		{
+			Method m = base.getClass()
+			               .getMethod(method.toString());
+			return m.invoke(base, params);
+		}
+		catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+		{
+			LogFactory.getLog(GuiceELResolverWrapper.class)
+			          .log(Level.FINE, "Could not locate jsf method " + method.toString()
+			                           + " using"
+			                           + " " + base.getClass()
+			                                       .getCanonicalName()
+			                           + "'", e);
+		}
+		return super.invoke(context, base, method, paramTypes, params);
 	}
 
 	/**
