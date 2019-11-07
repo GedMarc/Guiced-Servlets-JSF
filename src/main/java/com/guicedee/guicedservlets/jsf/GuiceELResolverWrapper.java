@@ -61,72 +61,56 @@ public class GuiceELResolverWrapper
 	@Override
 	public Object getValue(ELContext context, Object base, Object property)
 	{
-		Object obj = getWrapped().getValue(context, base, property);
+		Object obj;
 
-		if (null != obj)
+		if (base != null)
 		{
-			/*FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
-
-			if (null != fctx)
+			if (base instanceof Collections || base instanceof Map)
 			{
-				Injector injector = GuiceContext.inject();
-				if (injector == null)
+				return null;
+			}
+			try
+			{
+				Field f = base.getClass()
+				              .getDeclaredField(property.toString());
+				f.setAccessible(true);
+				obj = f.get(base);
+				if (obj != null)
 				{
-					throw new NullPointerException("Could not locate "
-					                               + "Guice Injector in application scope using"
-					                               + " key '" + Injector.class.getName() + "'");
+					GuiceContext.inject()
+					            .injectMembers(obj);
 				}
-				//injector.injectMembers(obj);
-			}*/
+			}
+			catch (IllegalAccessException | NoSuchFieldException e)
+			{
+				throw new RuntimeException("Could not access field " + property.toString()
+				                           + " on "
+				                           + " obj '" + base.getClass()
+				                                            .getCanonicalName()
+				                           + "'", e);
+			}
 		}
 		else
 		{
-			if (base != null)
+			try
 			{
-				if(base instanceof Collections || base instanceof Map)
+				obj = GuiceContext.get(Key.get(Object.class, Names.named(property.toString())));
+				if (obj.getClass()
+				       .isAnnotationPresent(FacesConverter.class))
 				{
-					return null;
-				}
-				try
-				{
-					Field f = base.getClass()
-					              .getDeclaredField(property.toString());
-					f.setAccessible(true);
-					obj = f.get(base);
-					if(obj != null)
-					{
-						GuiceContext.inject().injectMembers(obj);
-					}
-				}
-				catch (IllegalAccessException | NoSuchFieldException e)
-				{
-					throw new RuntimeException("Could not access field " + property.toString()
-					                           + " on "
-					                           + " obj '" + base.getClass()
-					                                            .getCanonicalName()
-					                           + "'", e);
+					javax.faces.convert.Converter conv = (Converter) obj;
+					FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
+					return conv.getAsObject(fctx, null, null);
 				}
 			}
-			else
+			catch (Throwable e)
 			{
-				try
-				{
-					obj = GuiceContext.get(Key.get(Object.class, Names.named(property.toString())));
-					if(obj.getClass().isAnnotationPresent(FacesConverter.class))
-					{
-						javax.faces.convert.Converter conv = (Converter) obj;
-						FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
-						return conv.getAsObject(fctx, null, null);
-					}
-				}
-				catch (Throwable e)
-				{
-					LogFactory.getLog(GuiceELResolverWrapper.class).log(Level.FINE,"Could not locate jsf property " + property.toString()
-					                           + " using"
-					                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
-					                           + "'", e);
-					return null;
-				}
+				LogFactory.getLog(GuiceELResolverWrapper.class)
+				          .log(Level.FINE, "Could not locate jsf property " + property.toString()
+				                           + " using"
+				                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
+				                           + "'", e);
+				return null;
 			}
 		}
 
