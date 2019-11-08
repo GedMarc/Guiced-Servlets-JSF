@@ -152,7 +152,7 @@ public class GuiceELResolverWrapper
 				}
 			}
 			Method m = base.getClass()
-			               .getMethod(method.toString());
+			               .getMethod(method.toString(),paramTypes);
 			return m.invoke(base, params);
 		}
 		catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
