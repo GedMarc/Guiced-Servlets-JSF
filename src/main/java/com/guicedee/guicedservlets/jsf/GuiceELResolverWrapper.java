@@ -135,6 +135,22 @@ public class GuiceELResolverWrapper
 	{
 		try
 		{
+			if(paramTypes == null)
+			{
+				if(params != null && params.length > 0)
+				{
+					paramTypes = new Class<?>[params.length];
+					for (int i = 0; i < params.length; i++)
+					{
+						Object param = params[i];
+						paramTypes[i] = param.getClass();
+					}
+				}
+				else
+				{
+					paramTypes = new Class[0];
+				}
+			}
 			Method m = base.getClass()
 			               .getMethod(method.toString());
 			return m.invoke(base, params);
