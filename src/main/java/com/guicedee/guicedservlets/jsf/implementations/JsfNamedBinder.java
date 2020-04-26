@@ -30,6 +30,37 @@ public class JsfNamedBinder
 	protected void configure()
 	{
 		List<String> completed = new ArrayList<>();
+
+		//Converters before @Named now
+		for (ClassInfo classInfo : GuiceContext.instance()
+		                                       .getScanResult()
+		                                       .getClassesWithAnnotation("javax.faces.convert.FacesConverter"))
+		{
+			if (classInfo.isInterfaceOrAnnotation()
+			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent"))
+			{
+				continue;
+			}
+			Class<?> clazz = classInfo.loadClass();
+			if (completed.contains(clazz.getCanonicalName()))
+			{
+				continue;
+			}
+			completed.add(clazz.getCanonicalName());
+			javax.faces.convert.FacesConverter nn = clazz.getAnnotation(javax.faces.convert.FacesConverter.class);
+			String name = nn.value();
+			if (name.equals(STRING_EMPTY))
+			{
+				name = classInfo.getSimpleName();
+				StringBuilder sb = new StringBuilder(name);
+				sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+				name = sb.toString();
+			}
+			bindToScope(clazz, name);
+
+			facesConvertors.put(name, clazz);
+		}
+
 		for (ClassInfo classInfo : GuiceContext.instance()
 		                                       .getScanResult()
 		                                       .getClassesWithAnnotation(Named.class.getCanonicalName()))
@@ -87,33 +118,6 @@ public class JsfNamedBinder
 			{
 				bindToScope(clazz, name);
 			}
-		}
-
-		for (ClassInfo classInfo : GuiceContext.instance()
-		                                       .getScanResult()
-		                                       .getClassesWithAnnotation("javax.faces.convert.FacesConverter"))
-		{
-			if (classInfo.isInterfaceOrAnnotation()
-			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent"))
-			{
-				continue;
-			}
-			Class<?> clazz = classInfo.loadClass();
-			if (completed.contains(clazz.getCanonicalName()))
-			{
-				continue;
-			}
-			completed.add(clazz.getCanonicalName());
-			javax.faces.convert.FacesConverter nn = clazz.getAnnotation(javax.faces.convert.FacesConverter.class);
-			String name = nn.value()
-			                .equals(STRING_EMPTY) ? classInfo.getName() : nn.value();
-			StringBuilder sb = new StringBuilder(name);
-			sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
-			name = sb.toString();
-
-			bindToScope(clazz, name);
-
-			facesConvertors.put(name, clazz);
 		}
 
 		super.configure();
