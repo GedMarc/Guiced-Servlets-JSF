@@ -1,6 +1,6 @@
 module com.guicedee.guicedservlets.jsf {
 	exports com.guicedee.guicedservlets.jsf;
-//	exports com.guicedee.schemas.facesconfig;
+	//	exports com.guicedee.schemas.facesconfig;
 
 	requires com.guicedee.guicedservlets;
 	requires com.google.guice;

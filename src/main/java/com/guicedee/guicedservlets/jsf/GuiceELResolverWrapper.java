@@ -6,7 +6,8 @@ import com.google.inject.name.Names;
 import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.logger.LogFactory;
 
-import javax.el.*;
+import javax.el.ELContext;
+import javax.el.ELResolver;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -62,9 +63,11 @@ public class GuiceELResolverWrapper
 	@Override
 	public Object getValue(ELContext context, Object base, Object property)
 	{
-		Object obj = getWrapped().getValue(context,base,property);
-		if(obj != null)
+		Object obj = getWrapped().getValue(context, base, property);
+		if (obj != null)
+		{
 			return obj;
+		}
 
 		if (base != null)
 		{
@@ -88,11 +91,11 @@ public class GuiceELResolverWrapper
 			catch (IllegalAccessException | NoSuchFieldException e)
 			{
 				LogFactory.getLog(GuiceELResolverWrapper.class)
-				          .log(Level.FINE,"Could not access field " + property.toString()
-				                          + " on "
-				                          + " obj '" + base.getClass()
-				                                           .getCanonicalName()
-				                          + "'", e);
+				          .log(Level.FINE, "Could not access field " + property.toString()
+				                           + " on "
+				                           + " obj '" + base.getClass()
+				                                            .getCanonicalName()
+				                           + "'", e);
 				return getWrapped().getValue(context, base, property);
 			}
 		}
@@ -114,7 +117,8 @@ public class GuiceELResolverWrapper
 				try
 				{
 					return getWrapped().getValue(context, base, property);
-				}catch (Throwable T)
+				}
+				catch (Throwable T)
 				{
 					LogFactory.getLog(GuiceELResolverWrapper.class)
 					          .log(Level.FINE, "Could not locate jsf property " + property.toString()
@@ -129,15 +133,15 @@ public class GuiceELResolverWrapper
 		return obj;
 	}
 
-	/** @noinspection JavaReflectionInvocation*/
+	/** @noinspection JavaReflectionInvocation */
 	@Override
 	public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object... params)
 	{
 		try
 		{
-			if(paramTypes == null)
+			if (paramTypes == null)
 			{
-				if(params != null && params.length > 0)
+				if (params != null && params.length > 0)
 				{
 					paramTypes = new Class<?>[params.length];
 					for (int i = 0; i < params.length; i++)
@@ -152,7 +156,7 @@ public class GuiceELResolverWrapper
 				}
 			}
 			Method m = base.getClass()
-			               .getMethod(method.toString(),paramTypes);
+			               .getMethod(method.toString(), paramTypes);
 			return m.invoke(base, params);
 		}
 		catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
@@ -165,15 +169,6 @@ public class GuiceELResolverWrapper
 			                           + "'", e);
 		}
 		return super.invoke(context, base, method, paramTypes, params);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ELResolver getWrapped()
-	{
-		return wrapped;
 	}
 
 	/**
@@ -220,7 +215,6 @@ public class GuiceELResolverWrapper
 		return getWrapped().getFeatureDescriptors(context, base);
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -230,6 +224,15 @@ public class GuiceELResolverWrapper
 	public Class<?> getCommonPropertyType(ELContext context, Object base)
 	{
 		return getWrapped().getCommonPropertyType(context, base);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ELResolver getWrapped()
+	{
+		return wrapped;
 	}
 
 }

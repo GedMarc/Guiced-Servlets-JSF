@@ -4,17 +4,15 @@ import com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigura
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ListenerInfo;
 
-public class GuicedJSFDeploymentInfoConfiguration implements UndertowDeploymentConfigurator
+public class GuicedJSFDeploymentInfoConfiguration
+		implements UndertowDeploymentConfigurator
 {
 
 	@Override
 	public DeploymentInfo configure(DeploymentInfo deploymentInfo)
 	{
 		deploymentInfo.addServletContextAttribute("com.sun.faces.facesInitializerMappingsAdded", Boolean.TRUE)
-				 .addListener(new ListenerInfo(com.sun.faces.config.ConfigureListener.class));
-
-		//deploymentInfo.addInitParameter("javax.faces.CONFIG_FILES",facesConfigMergedFilename);
-
+		              .addListener(new ListenerInfo(com.sun.faces.config.ConfigureListener.class));
 		return deploymentInfo;
 	}
 }
