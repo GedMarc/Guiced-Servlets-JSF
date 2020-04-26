@@ -1,5 +1,6 @@
 package com.guicedee.guicedservlets.jsf;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
@@ -33,6 +34,18 @@ public class GuiceELResolverWrapper
 		implements FacesWrapper<ELResolver>
 {
 
+	private static final Map<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS
+			= new ImmutableMap.Builder<Class<?>, Class<?>>()
+					  .put(boolean.class, Boolean.class)
+					  .put(byte.class, Byte.class)
+					  .put(char.class, Character.class)
+					  .put(double.class, Double.class)
+					  .put(float.class, Float.class)
+					  .put(int.class, Integer.class)
+					  .put(long.class, Long.class)
+					  .put(short.class, Short.class)
+					  .put(void.class, Void.class)
+					  .build();
 	private ELResolver wrapped;
 
 	/**
@@ -40,6 +53,7 @@ public class GuiceELResolverWrapper
 	 */
 	public GuiceELResolverWrapper()
 	{
+		//No config required
 	}
 
 	/**
@@ -144,10 +158,31 @@ public class GuiceELResolverWrapper
 				if (params != null && params.length > 0)
 				{
 					paramTypes = new Class<?>[params.length];
-					for (int i = 0; i < params.length; i++)
+					for (Method declaredMethod : base.getClass()
+					                                 .getDeclaredMethods())
 					{
-						Object param = params[i];
-						paramTypes[i] = param.getClass();
+						if (declaredMethod.getName()
+						                  .equals(method.toString()) && declaredMethod.getParameterTypes().length == params.length)
+						{
+							Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
+							for (int i = 0; i < parameterTypes.length; i++)
+							{
+								Class<?> parameterType = parameterTypes[i];
+								Object o = params[i];
+								if (o == null)
+								{
+									paramTypes[i] = parameterType;
+									continue;
+								}
+								parameterType = wrap(parameterType);
+								if (o.getClass()
+								     .equals(parameterType))
+								{
+									paramTypes[i] = parameterTypes[i];
+								}
+							}
+
+						}
 					}
 				}
 				else
@@ -169,6 +204,13 @@ public class GuiceELResolverWrapper
 			                           + "'", e);
 		}
 		return super.invoke(context, base, method, paramTypes, params);
+	}
+
+	// safe because both Long.class and long.class are of type Class<Long>
+	@SuppressWarnings("unchecked")
+	private static <T> Class<T> wrap(Class<T> c)
+	{
+		return c.isPrimitive() ? (Class<T>) PRIMITIVES_TO_WRAPPERS.get(c) : c;
 	}
 
 	/**
