@@ -130,6 +130,11 @@ public class GuiceELResolverWrapper
 			{
 				try
 				{
+					LogFactory.getLog(GuiceELResolverWrapper.class)
+					          .log(Level.WARNING, "Could not locate jsf property " + property.toString()
+					                              + " using"
+					                              + " key '" + Key.get(Object.class, Names.named(property.toString()))
+					                              + "' from Guice. Checking wrapper", e);
 					return getWrapped().getValue(context, base, property);
 				}
 				catch (Throwable T)
