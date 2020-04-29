@@ -1,15 +1,11 @@
 package com.guicedee.guicedservlets.jsf.implementations;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import com.google.inject.servlet.RequestScoped;
-import com.google.inject.servlet.SessionScoped;
 import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.guicedinjection.interfaces.IGuiceModule;
 import io.github.classgraph.ClassInfo;
 
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.inject.Named;
 import java.util.ArrayList;
@@ -125,34 +121,8 @@ public class JsfNamedBinder
 
 	private void bindToScope(Class<?> clazz, String name)
 	{
-		if (clazz.isAnnotationPresent(Singleton.class) || clazz.isAnnotationPresent(javax.inject.Singleton.class) || clazz.isAnnotationPresent(ApplicationScoped.class))
-		{
-			bind(clazz).in(Singleton.class);
-			bind(Object.class).annotatedWith(Names.named(name))
-			                  .to(clazz)
-			                  .in(Singleton.class);
-		}
-		else if (clazz.isAnnotationPresent(SessionScoped.class))
-		{
-			bind(clazz).in(SessionScoped.class);
-			bind(Object.class).annotatedWith(Names.named(name))
-			                  .to(clazz)
-			                  .in(SessionScoped.class);
-		}
-		else if (clazz.isAnnotationPresent(RequestScoped.class))
-		{
-			bind(clazz).in(RequestScoped.class);
-			bind(Object.class).annotatedWith(Names.named(name))
-			                  .to(clazz)
-			                  .in(RequestScoped.class);
-		}
-		else
-		{
-			bind(clazz);
-			bind(Object.class).annotatedWith(Names.named(name))
-			                  .to(clazz);
-		}
+		bind(clazz);
+		bind(Object.class).annotatedWith(Names.named(name))
+		                  .to(clazz);
 	}
-
-
 }
