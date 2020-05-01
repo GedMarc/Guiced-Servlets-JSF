@@ -77,12 +77,7 @@ public class GuiceELResolverWrapper
 	@Override
 	public Object getValue(ELContext context, Object base, Object property)
 	{
-		Object obj = getWrapped().getValue(context, base, property);
-		if (obj != null)
-		{
-			return obj;
-		}
-
+		Object obj = null;
 		if (base != null)
 		{
 			if (base instanceof Collections || base instanceof Map)
@@ -130,20 +125,15 @@ public class GuiceELResolverWrapper
 			{
 				try
 				{
-					LogFactory.getLog(GuiceELResolverWrapper.class)
-					          .log(Level.WARNING, "Could not locate jsf property " + property.toString()
-					                              + " using"
-					                              + " key '" + Key.get(Object.class, Names.named(property.toString()))
-					                              + "' from Guice. Checking wrapper", e);
 					return getWrapped().getValue(context, base, property);
 				}
 				catch (Throwable T)
 				{
 					LogFactory.getLog(GuiceELResolverWrapper.class)
-					          .log(Level.FINE, "Could not locate jsf property " + property.toString()
-					                           + " using"
-					                           + " key '" + Key.get(Object.class, Names.named(property.toString()))
-					                           + "'", e);
+					          .log(Level.WARNING, "Could not locate jsf property " + property.toString()
+					                              + " using"
+					                              + " key '" + Key.get(Object.class, Names.named(property.toString()))
+					                              + "'", e);
 				}
 				return null;
 			}

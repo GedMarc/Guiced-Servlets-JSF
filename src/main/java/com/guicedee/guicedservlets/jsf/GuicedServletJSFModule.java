@@ -5,19 +5,14 @@ import com.guicedee.guicedservlets.services.IGuiceSiteBinder;
 import com.guicedee.logger.LogFactory;
 
 import javax.faces.webapp.FacesServlet;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
 public class GuicedServletJSFModule
 		implements IGuiceSiteBinder<GuiceSiteInjectorModule>
 {
-	/**
-	 * The logger
-	 */
 	private static final Logger log = LogFactory.getLog("GuicedServletJSFModule");
-
-	private static Set<String> facesServPattern = new HashSet<>();
+	public static Set<String> JsfListenURLs = Set.of("/faces/", "/faces/*", "*.jsf", "*.faces", "*.xhtml");
 
 	@Override
 	public void onBind(GuiceSiteInjectorModule module)
@@ -25,7 +20,7 @@ public class GuicedServletJSFModule
 		module.bind(FacesServlet.class)
 		      .asEagerSingleton();
 		log.config("Configured Faces Servlet");
-		module.serve$("/faces/", "/faces/*", "*.jsf", "*.faces", "*.xhtml")
+		module.serve$(JsfListenURLs)
 		      .with(FacesHttpServlet.class);
 		log.config("Serving /faces with Faces Servlet");
 	}
