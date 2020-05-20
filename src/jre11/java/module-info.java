@@ -10,7 +10,7 @@ module com.guicedee.guicedservlets.jsf {
 	requires com.guicedee.logmaster;
 	requires java.logging;
 	requires javax.el;
-	requires java.desktop;
+	requires static java.desktop;
 	requires com.guicedee.guicedinjection;
 	requires java.validation;
 	requires com.guicedee.guicedservlets.undertow;
