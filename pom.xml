@@ -43,10 +43,12 @@
             <groupId>com.guicedee.services</groupId>
             <artifactId>javax.faces</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.guicedee.servlets</groupId>
             <artifactId>guiced-servlets</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.guicedee</groupId>
             <artifactId>guiced-undertow</artifactId>

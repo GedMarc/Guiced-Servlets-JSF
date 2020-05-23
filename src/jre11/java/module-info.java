@@ -5,8 +5,11 @@ module com.guicedee.guicedservlets.jsf {
 	requires com.guicedee.guicedservlets;
 	requires com.google.guice;
 	requires javax.faces;
-	requires javax.servlet.api;
+
+	requires java.servlet;
+
 	requires com.google.guice.extensions.servlet;
+
 	requires com.guicedee.logmaster;
 	requires java.logging;
 	requires javax.el;
