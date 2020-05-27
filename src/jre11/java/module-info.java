@@ -3,7 +3,7 @@ module com.guicedee.guicedservlets.jsf {
 	//	exports com.guicedee.schemas.facesconfig;
 	requires javax.faces;
 	requires javax.el;
-	requires static java.desktop;
+	requires java.desktop;
 	requires com.guicedee.guicedinjection;
 	requires com.guicedee.guicedservlets.undertow;
 
