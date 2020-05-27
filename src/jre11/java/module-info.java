@@ -1,26 +1,11 @@
 module com.guicedee.guicedservlets.jsf {
 	exports com.guicedee.guicedservlets.jsf;
 	//	exports com.guicedee.schemas.facesconfig;
-
-	requires com.guicedee.guicedservlets;
-	requires com.google.guice;
 	requires javax.faces;
-
-	requires java.servlet;
-
-	requires com.google.guice.extensions.servlet;
-
-	requires com.guicedee.logmaster;
-	requires java.logging;
 	requires javax.el;
 	requires static java.desktop;
 	requires com.guicedee.guicedinjection;
-	requires java.validation;
 	requires com.guicedee.guicedservlets.undertow;
-	requires undertow.servlet;
-	requires io.github.classgraph;
-	requires javax.inject;
-	requires com.fasterxml.jackson.databind;
 
 	requires java.xml.bind;
 
