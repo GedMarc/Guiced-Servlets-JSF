@@ -27,7 +27,6 @@ public class JsfNamedBinder
 	{
 		List<String> completed = new ArrayList<>();
 
-		//Converters before @Named now
 		for (ClassInfo classInfo : GuiceContext.instance()
 		                                       .getScanResult()
 		                                       .getClassesWithAnnotation("javax.faces.convert.FacesConverter"))
@@ -124,5 +123,6 @@ public class JsfNamedBinder
 		bind(clazz);
 		bind(Object.class).annotatedWith(Names.named(name))
 		                  .to(clazz);
+		System.out.println("Bound : " + name + " to " + clazz.getCanonicalName());
 	}
 }

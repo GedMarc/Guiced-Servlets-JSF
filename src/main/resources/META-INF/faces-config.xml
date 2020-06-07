@@ -4,7 +4,7 @@
         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
         version="2.3">
-    <name>ApolloUI</name>
+    <name>GuicedServletsJSF</name>
 
     <factory>
         <application-factory>com.guicedee.guicedservlets.jsf.FacesApplicationFactoryWrapper</application-factory>
