@@ -123,6 +123,5 @@ public class JsfNamedBinder
 		bind(clazz);
 		bind(Object.class).annotatedWith(Names.named(name))
 		                  .to(clazz);
-		System.out.println("Bound : " + name + " to " + clazz.getCanonicalName());
 	}
 }
