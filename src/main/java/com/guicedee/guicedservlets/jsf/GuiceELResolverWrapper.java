@@ -97,7 +97,7 @@ public class GuiceELResolverWrapper
 					            .injectMembers(obj);
 				}
 			}
-			catch (IllegalAccessException | NoSuchFieldException e)
+			catch (IllegalAccessException e)
 			{
 				LogFactory.getLog(GuiceELResolverWrapper.class)
 				          .log(Level.FINE, "Could not access field " + property.toString()
@@ -105,6 +105,10 @@ public class GuiceELResolverWrapper
 				                           + " obj '" + base.getClass()
 				                                            .getCanonicalName()
 				                           + "'", e);
+				return getWrapped().getValue(context, base, property);
+			}
+			catch (NoSuchFieldException e)
+			{
 				return getWrapped().getValue(context, base, property);
 			}
 		}

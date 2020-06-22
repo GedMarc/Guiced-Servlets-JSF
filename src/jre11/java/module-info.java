@@ -1,10 +1,10 @@
-import com.guicedee.guicedinjection.interfaces.IFileContentsScanner;
-
-module com.guicedee.guicedservlets.jsf {
+open module com.guicedee.guicedservlets.jsf {
 	exports com.guicedee.guicedservlets.jsf;
 
 	requires transitive javax.faces;
-	requires transitive javax.el;
+
+	requires javax.el;
+	requires jakarta.enterprise.cdi;
 	requires java.desktop;
 
 	requires transitive com.guicedee.guicedservlets.undertow;
@@ -14,7 +14,4 @@ module com.guicedee.guicedservlets.jsf {
 	provides com.guicedee.guicedservlets.services.IGuiceSiteBinder with com.guicedee.guicedservlets.jsf.GuicedServletJSFModule;
 	provides com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigurator with com.guicedee.guicedservlets.jsf.implementations.GuicedJSFDeploymentInfoConfiguration;
 	provides com.guicedee.guicedinjection.interfaces.IGuiceModule with com.guicedee.guicedservlets.jsf.implementations.JsfNamedBinder;
-
-	opens com.guicedee.guicedservlets.jsf to com.google.guice;
-	opens com.guicedee.guicedservlets.jsf.implementations to com.google.guice;
 }

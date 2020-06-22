@@ -1,9 +1,13 @@
 package com.guicedee.guicedservlets.jsf;
 
+import com.guicedee.cdi.services.NamedBindings;
+import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.guicedservlets.jsf.implementations.JsfNamedBinder;
+import io.github.classgraph.ClassInfo;
 
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.convert.FacesConverter;
 import java.util.Map;
 
 /**
@@ -39,14 +43,6 @@ public class FacesApplicationFactoryWrapper
 	public Application getApplication()
 	{
 		Application application = factory.getApplication();
-
-
-		for (Map.Entry<String, Class<?>> entry : JsfNamedBinder.facesConvertors.entrySet())
-		{
-			String key = entry.getKey();
-			Class<?> value = entry.getValue();
-			application.addConverter(key, value.getCanonicalName());
-		}
 		return new FacesApplicationWrapper(application);
 	}
 
