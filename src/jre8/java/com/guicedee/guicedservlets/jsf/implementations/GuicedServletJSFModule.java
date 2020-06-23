@@ -28,9 +28,8 @@ public class GuicedServletJSFModule
 	{
 		module.bind(FacesServlet.class)
 		      .asEagerSingleton();
-		log.config("Configured Faces Servlet");
 		module.serve$(JsfListenURLs)
 		      .with(FacesHttpServlet.class);
-		log.config("Serving /faces with Faces Servlet");
+		log.config("Serving " + JsfListenURLs.toString() + " with Faces Servlet");
 	}
 }
