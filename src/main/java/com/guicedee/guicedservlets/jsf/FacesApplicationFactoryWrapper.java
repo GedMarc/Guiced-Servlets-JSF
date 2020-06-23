@@ -1,5 +1,6 @@
 package com.guicedee.guicedservlets.jsf;
 
+import com.google.inject.Key;
 import com.guicedee.cdi.services.NamedBindings;
 import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.guicedservlets.jsf.implementations.JsfNamedBinder;
@@ -43,6 +44,12 @@ public class FacesApplicationFactoryWrapper
 	public Application getApplication()
 	{
 		Application application = factory.getApplication();
+		NamedBindings.getConverters().forEach((key,value)->{
+			application.addConverter(key,value.getCanonicalName());
+		});
+		NamedBindings.getValidators().forEach((key,value)->{
+			application.addValidator(key,value.getCanonicalName());
+		});
 		return new FacesApplicationWrapper(application);
 	}
 

@@ -122,6 +122,7 @@ public class GuiceELResolverWrapper
 				{
 					javax.faces.convert.Converter conv = (Converter) obj;
 					FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
+					context.setPropertyResolved(true);
 					return conv.getAsObject(fctx, null, null);
 				}
 			}
