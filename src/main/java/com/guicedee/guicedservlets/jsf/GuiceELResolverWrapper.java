@@ -5,7 +5,11 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import com.guicedee.guicedinjection.GuiceContext;
+import com.guicedee.guicedinjection.pairing.Pair;
 import com.guicedee.logger.LogFactory;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.MethodInfo;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
@@ -19,8 +23,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link FacesWrapper} implementation that wraps an {@link ELResolver} and
@@ -34,6 +42,8 @@ public class GuiceELResolverWrapper
 		implements FacesWrapper<ELResolver>
 {
 
+	private static final Logger log = LogFactory.getLog("GuiceELResolver");
+
 	private static final Map<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS
 			= new ImmutableMap.Builder<Class<?>, Class<?>>()
 					  .put(boolean.class, Boolean.class)
@@ -46,6 +56,7 @@ public class GuiceELResolverWrapper
 					  .put(short.class, Short.class)
 					  .put(void.class, Void.class)
 					  .build();
+
 	private ELResolver wrapped;
 
 	/**
@@ -67,6 +78,11 @@ public class GuiceELResolverWrapper
 		this.wrapped = wrapped;
 	}
 
+	private static final Map<String,Key<Object>> instanceMap = new ConcurrentHashMap<>();
+	private static final Map<String,javax.faces.convert.Converter<?>> convertorsMap = new ConcurrentHashMap<>();
+
+	private static final Map<String, String> wrappedMap = new ConcurrentHashMap<>();
+	private static final Map<String, String> nulledMap = new ConcurrentHashMap<>();
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -77,39 +93,94 @@ public class GuiceELResolverWrapper
 	@Override
 	public Object getValue(ELContext context, Object base, Object property)
 	{
-		Object obj = null;
+		if(base == null && convertorsMap.containsKey(property.toString()))
+		{
+			context.setPropertyResolved(true);
+			return convertorsMap.get(property.toString()).getAsObject((FacesContext) context.getContext(FacesContext.class),
+					null,null);
+		}
+		if(base == null && instanceMap.containsKey(property.toString()))
+		{
+			context.setPropertyResolved(true);
+			return GuiceContext.get(instanceMap.get(property.toString()));
+		}
+		if(base == null)
+		{
+			if(nulledMap.containsKey(property.toString())  && nulledMap.get(property.toString()).equals(property.toString()) ) {
+				context.setPropertyResolved(true);
+				return null;
+			}
+			if(wrappedMap.containsKey(property.toString()) && wrappedMap.get(property.toString()).equals(property.toString()) )
+			{
+				return getWrapped().getValue(context, base, property);
+			}
+		}
+		else
+		{
+			if(wrappedMap.containsKey(base.toString()) && wrappedMap.get(base.toString()).equals(property.toString()) )
+			{
+				return getWrapped().getValue(context, base, property);
+			}
+		}
+
+
+		Object obj;
 		if (base != null)
 		{
 			if (base instanceof Collections || base instanceof Map)
 			{
-				return null;
+				return getWrapped().getValue(context, base, property);
 			}
 			try
 			{
-
-				Field f = base.getClass()
-				              .getDeclaredField(property.toString());
-				f.setAccessible(true);
-				obj = f.get(base);
-				if (obj != null)
-				{
-					GuiceContext.inject()
-					            .injectMembers(obj);
-				}
+				Object objProps = new PropertyUtilsBean().getProperty(base, property.toString());
+				context.setPropertyResolved(true);
+				return objProps;
 			}
-			catch (IllegalAccessException e)
+			catch (IllegalAccessException | InvocationTargetException e)
 			{
-				LogFactory.getLog(GuiceELResolverWrapper.class)
-				          .log(Level.FINE, "Could not access field " + property.toString()
+				log.log(Level.FINE, "Could not access property " + property.toString()
 				                           + " on "
 				                           + " obj '" + base.getClass()
 				                                            .getCanonicalName()
 				                           + "'", e);
-				return getWrapped().getValue(context, base, property);
+				Object value = getWrapped().getValue(context, base, property);
+				if(value != null)
+				{
+					wrappedMap.put(base.toString(), property.toString());
+				}
+				else
+				{
+					nulledMap.put(base.toString(), property.toString());
+				}
+				return value;
 			}
-			catch (NoSuchFieldException e)
+			catch (NoSuchMethodException e)
 			{
-				return getWrapped().getValue(context, base, property);
+				Object value = getWrapped().getValue(context, base, property);
+				if(value != null)
+				{
+					wrappedMap.put(base.toString(), property.toString());
+				}
+				else
+				{
+					log.log(Level.SEVERE,"No Field/Method Found - " + base + " / " + property);
+					nulledMap.put(base.toString(), property.toString());
+				}
+				return value;
+			}catch (Throwable e)
+			{
+				Object value = getWrapped().getValue(context, base, property);
+				if(value != null)
+				{
+					wrappedMap.put(base.toString(), property.toString());
+				}
+				else
+				{
+					log.log(Level.SEVERE,"Throwable looking for property - " + base + " / " + property);
+					nulledMap.put(base.toString(), property.toString());
+				}
+				return value;
 			}
 		}
 		else
@@ -123,17 +194,32 @@ public class GuiceELResolverWrapper
 					javax.faces.convert.Converter conv = (Converter) obj;
 					FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
 					context.setPropertyResolved(true);
+					convertorsMap.put(property.toString(),conv);
 					return conv.getAsObject(fctx, null, null);
 				}
+				context.setPropertyResolved(true);
+				instanceMap.put(property.toString(),Key.get(Object.class, Names.named(property.toString())));
+				return obj;
 			}
 			catch (Throwable e)
 			{
 				try
 				{
-					return getWrapped().getValue(context, base, property);
+					Object value = getWrapped().getValue(context, base, property);
+					if(value != null)
+					{
+						wrappedMap.put(property.toString(), property.toString());
+					}
+					else
+					{
+						log.log(Level.WARNING,"Couldn't find injection - "+ base + " - " + property);
+						nulledMap.put(property.toString(), property.toString());
+					}
+					return value;
 				}
 				catch (Throwable T)
 				{
+					nulledMap.put(property.toString(), property.toString());
 					LogFactory.getLog(GuiceELResolverWrapper.class)
 					          .log(Level.WARNING, "Could not locate jsf property " + property.toString()
 					                              + " using"
@@ -143,8 +229,6 @@ public class GuiceELResolverWrapper
 				return null;
 			}
 		}
-		context.setPropertyResolved(true);
-		return obj;
 	}
 
 	/** @noinspection JavaReflectionInvocation */
