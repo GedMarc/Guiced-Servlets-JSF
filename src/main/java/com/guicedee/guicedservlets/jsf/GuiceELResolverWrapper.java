@@ -11,12 +11,12 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.MethodInfo;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
 import java.beans.FeatureDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -79,7 +79,7 @@ public class GuiceELResolverWrapper
 	}
 
 	private static final Map<String,Key<Object>> instanceMap = new ConcurrentHashMap<>();
-	private static final Map<String,javax.faces.convert.Converter<?>> convertorsMap = new ConcurrentHashMap<>();
+	private static final Map<String,jakarta.faces.convert.Converter<?>> convertorsMap = new ConcurrentHashMap<>();
 
 	private static final Map<String, String> wrappedMap = new ConcurrentHashMap<>();
 	private static final Map<String, String> nulledMap = new ConcurrentHashMap<>();
@@ -191,7 +191,7 @@ public class GuiceELResolverWrapper
 				if (obj.getClass()
 				       .isAnnotationPresent(FacesConverter.class))
 				{
-					javax.faces.convert.Converter conv = (Converter) obj;
+					jakarta.faces.convert.Converter conv = (Converter) obj;
 					FacesContext fctx = (FacesContext) context.getContext(FacesContext.class);
 					context.setPropertyResolved(true);
 					convertorsMap.put(property.toString(),conv);

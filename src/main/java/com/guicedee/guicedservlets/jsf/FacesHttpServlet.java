@@ -3,9 +3,9 @@ package com.guicedee.guicedservlets.jsf;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import javax.faces.webapp.FacesServlet;
-import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
+import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 
 @Singleton

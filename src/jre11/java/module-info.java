@@ -1,9 +1,9 @@
 open module com.guicedee.guicedservlets.jsf {
 	exports com.guicedee.guicedservlets.jsf;
 
-	requires transitive javax.faces;
+	requires transitive jakarta.faces;
 
-	requires javax.el;
+	requires jakarta.el;
 	requires jakarta.enterprise.cdi;
 	requires java.desktop;
 

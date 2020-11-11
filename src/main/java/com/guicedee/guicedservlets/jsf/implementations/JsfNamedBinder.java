@@ -7,10 +7,10 @@ import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.guicedinjection.interfaces.IGuiceModule;
 import io.github.classgraph.ClassInfo;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.bean.ManagedBean;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.bean.ManagedBean;
 
 public class JsfNamedBinder
 		extends AbstractModule
@@ -25,7 +25,7 @@ public class JsfNamedBinder
 		                                       .getClassesWithAnnotation(ManagedBean.class.getCanonicalName()))
 		{
 			if (classInfo.isInterfaceOrAnnotation()
-			    || classInfo.hasAnnotation("javax.enterprise.context.Dependent"))
+			    || classInfo.hasAnnotation("jakarta.enterprise.context.Dependent"))
 			{
 				continue;
 			}

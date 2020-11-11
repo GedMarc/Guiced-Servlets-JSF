@@ -4,7 +4,7 @@ import com.guicedee.guicedservlets.services.GuiceSiteInjectorModule;
 import com.guicedee.guicedservlets.services.IGuiceSiteBinder;
 import com.guicedee.logger.LogFactory;
 
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.webapp.FacesServlet;
 import java.util.Set;
 import java.util.logging.Logger;
 

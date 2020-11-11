@@ -1,8 +1,8 @@
 package com.guicedee.guicedservlets.jsf;
 
-import javax.el.ELResolver;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationWrapper;
+import jakarta.el.ELResolver;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationWrapper;
 
 /**
  * An implementation of {@link ApplicationWrapper}.

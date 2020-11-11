@@ -6,9 +6,9 @@ import com.guicedee.guicedinjection.GuiceContext;
 import com.guicedee.guicedservlets.jsf.implementations.JsfNamedBinder;
 import io.github.classgraph.ClassInfo;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.convert.FacesConverter;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.convert.FacesConverter;
 import java.util.Map;
 
 /**
