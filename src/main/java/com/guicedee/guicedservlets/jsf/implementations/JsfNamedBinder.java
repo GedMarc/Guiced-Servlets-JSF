@@ -10,7 +10,6 @@ import io.github.classgraph.ClassInfo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.bean.ManagedBean;
 
 public class JsfNamedBinder
 		extends AbstractModule
