@@ -13,7 +13,7 @@ open module com.guicedee.guicedservlets.jsf {
 
 	requires transitive com.guicedee.guicedservlets.undertow;
 
-	requires java.xml.bind;
+	requires jakarta.xml.bind;
 
 	provides com.guicedee.guicedservlets.services.IGuiceSiteBinder with com.guicedee.guicedservlets.jsf.GuicedServletJSFModule;
 	provides com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigurator with com.guicedee.guicedservlets.jsf.implementations.GuicedJSFDeploymentInfoConfiguration;
