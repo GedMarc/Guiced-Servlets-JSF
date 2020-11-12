@@ -43,11 +43,16 @@
             <groupId>com.guicedee.services</groupId>
             <artifactId>commons-beanutils</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.guicedee.services</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.guicedee.services</groupId>
