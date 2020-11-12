@@ -10,6 +10,7 @@ import io.github.classgraph.ClassInfo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.bean.ManagedBean;
 
 public class JsfNamedBinder
 		extends AbstractModule
@@ -58,6 +59,52 @@ public class JsfNamedBinder
 				}
 			}
 		}
+
+		for (ClassInfo classInfo : GuiceContext.instance()
+				.getScanResult()
+				.getClassesWithAnnotation(jakarta.faces.bean.ApplicationScoped.class.getCanonicalName()))
+		{
+			if (classInfo.isInterfaceOrAnnotation()
+					|| classInfo.hasAnnotation("jakarta.enterprise.context.Dependent"))
+			{
+				continue;
+			}
+			Class<?> clazz = classInfo.loadClass();
+			jakarta.faces.bean.ApplicationScoped nn = clazz.getAnnotation(jakarta.faces.bean.ApplicationScoped.class);
+			String name = NamedBindings.cleanName(classInfo,"");
+			NamedBindings.bindToScope(binder(), clazz, name, Singleton.class);
+		}
+
+		for (ClassInfo classInfo : GuiceContext.instance()
+				.getScanResult()
+				.getClassesWithAnnotation(jakarta.faces.bean.SessionScoped.class.getCanonicalName()))
+		{
+			if (classInfo.isInterfaceOrAnnotation()
+					|| classInfo.hasAnnotation("jakarta.enterprise.context.Dependent"))
+			{
+				continue;
+			}
+			Class<?> clazz = classInfo.loadClass();
+			jakarta.faces.bean.SessionScoped nn = clazz.getAnnotation(jakarta.faces.bean.SessionScoped.class);
+			String name = NamedBindings.cleanName(classInfo,"");
+			NamedBindings.bindToScope(binder(), clazz, name, com.google.inject.servlet.SessionScoped.class);
+		}
+
+		for (ClassInfo classInfo : GuiceContext.instance()
+				.getScanResult()
+				.getClassesWithAnnotation(jakarta.faces.bean.RequestScoped.class.getCanonicalName()))
+		{
+			if (classInfo.isInterfaceOrAnnotation()
+					|| classInfo.hasAnnotation("jakarta.enterprise.context.Dependent"))
+			{
+				continue;
+			}
+			Class<?> clazz = classInfo.loadClass();
+			jakarta.faces.bean.RequestScoped nn = clazz.getAnnotation(jakarta.faces.bean.RequestScoped.class);
+			String name = NamedBindings.cleanName(classInfo,"");
+			NamedBindings.bindToScope(binder(), clazz, name, com.google.inject.servlet.RequestScoped.class);
+		}
+
 
 		super.configure();
 	}
