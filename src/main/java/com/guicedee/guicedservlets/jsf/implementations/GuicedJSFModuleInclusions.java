@@ -11,7 +11,6 @@ public class GuicedJSFModuleInclusions implements IGuiceScanModuleInclusions<Gui
     public @NotNull Set<String> includeModules() {
         Set<String> moduleScanningAllowed = new HashSet<>();
         moduleScanningAllowed.add("com.guicedee.guicedservlets.jsf");
-        moduleScanningAllowed.add("com.guicedee.guicedservlets.jsf");
         return moduleScanningAllowed;
     }
 }
