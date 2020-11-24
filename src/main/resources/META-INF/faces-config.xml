@@ -4,9 +4,8 @@
         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
         version="2.3">
     <name>GuicedServletsJSF</name>
-
-    <factory>
-        <application-factory>com.guicedee.guicedservlets.jsf.FacesApplicationFactoryWrapper</application-factory>
-    </factory>
+    <application>
+        <el-resolver>com.guicedee.guicedservlets.jsf.GuiceELResolverWrapper</el-resolver>
+    </application>
 
 </faces-config>
