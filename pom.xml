@@ -25,7 +25,7 @@
             <dependency>
                 <groupId>com.guicedee</groupId>
                 <artifactId>guicedee-bom</artifactId>
-                <version>${project.version}</version>
+                <version>${guicedee.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
