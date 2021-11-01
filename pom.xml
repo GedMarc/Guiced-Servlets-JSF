@@ -13,7 +13,7 @@
     <groupId>com.guicedee.servlets</groupId>
     <artifactId>guiced-servlets-jsf</artifactId>
     <packaging>jar</packaging>
-
+    <version>0.0.0_0-SNAPSHOT</version>
     <name>Guiced Servlets - JSF</name>
 
     <description>Configures Guice Servlet for JSF</description>
