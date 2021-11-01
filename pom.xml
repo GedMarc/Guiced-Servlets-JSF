@@ -6,8 +6,9 @@
 
     <parent>
         <groupId>com.guicedee</groupId>
-        <artifactId>guicedee-projects</artifactId>
+        <artifactId>dev-kit</artifactId>
         <version>0.0.0_0-SNAPSHOT</version>
+        <relativePath>../../../</relativePath>
     </parent>
 
     <groupId>com.guicedee.servlets</groupId>
@@ -19,7 +20,10 @@
     <description>Configures Guice Servlet for JSF</description>
 
     <url>https://github.com/GedMarc/Guiced-Servlets-JSF</url>
-
+    <properties>
+        <ignore.moditect>true</ignore.moditect>
+        <flatten.pom>false</flatten.pom>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
